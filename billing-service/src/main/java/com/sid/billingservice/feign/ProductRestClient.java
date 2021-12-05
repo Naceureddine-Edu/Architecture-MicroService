@@ -22,9 +22,14 @@ public interface ProductRestClient
         PagedModel<Product> pageProducts();
      */
 
+    /* Avec Pagination
     @GetMapping(path = "/products")
     PagedModel<Product> pageProducts(@RequestParam(name = "page") int page,
                                      @RequestParam(name = "size") int size);
+    */
+    
+    @GetMapping(path = "/products")
+    PagedModel<Product> pageProducts();
 
 
     @GetMapping(path = "/products/{id}")
