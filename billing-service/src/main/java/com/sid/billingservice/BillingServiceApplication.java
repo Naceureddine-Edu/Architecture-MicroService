@@ -41,7 +41,7 @@ public class BillingServiceApplication {
                             null,new Date(),null,customer.getId(),null));
 
             // Retouner tout les Produits a partir de la DB du MicroService inventory-service
-            PagedModel<Product> productPagedModel = productRestClient.pageProducts(0,3);
+            PagedModel<Product> productPagedModel = productRestClient.pageProducts();
 
             productPagedModel.forEach(inventoryServiceProduct ->
             {
