@@ -57,10 +57,11 @@ public class SecurityServiceApplication
             accountService.addRoleToUser("user3","PRODUCT_MANAGER");
             accountService.addRoleToUser("user4","USER");
             accountService.addRoleToUser("user4","BILLS_MANAGER");
-
+            /*
             accountService.listUsers().forEach(appUser -> {
                 System.out.println(appUser.toString());
             });
+             */
         };
     }
 }
