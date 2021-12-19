@@ -3,6 +3,7 @@ package com.sid.securityservice.filters;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sid.securityservice.util.JWTutil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,11 +53,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // getPrincipal PERMET DE RETOURNER L'UTILISATEUR CONNECTE
         User user = (User) authResult.getPrincipal();//Le cast parce que la methode retourne Object
         // Pour signer le TOKEN
-        Algorithm algorithmHMAC = Algorithm.HMAC256("mySecret1234");
+        Algorithm algorithmHMAC = Algorithm.HMAC256(JWTutil.SECRET);
 
         String jwtaccesToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+5*60*1000))// 5min
+                .withExpiresAt(new Date(System.currentTimeMillis()+JWTutil.ACCES_TOKEN_EXPIRE))// 5min
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(grantedAuthority ->
                         grantedAuthority.getAuthority()).collect(Collectors.toList()))
@@ -64,7 +65,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtRefrechToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+15*60*1000))// 15min
+                .withExpiresAt(new Date(System.currentTimeMillis()+JWTutil.REFRESH_TOKEN_EXPIRE))// 15min
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithmHMAC);
 
@@ -73,9 +74,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         idToken.put("access-token",jwtaccesToken);
         idToken.put("refrech-token",jwtRefrechToken);
 
-        // response.setHeader("Authorization",jwtaccesToken); envoyer le token dans le header
-        // Envoye dans le corps de la reponse sous format JSON=>ObjectMapper
-        response.setContentType("application/json");
-        new ObjectMapper().writeValue(response.getOutputStream(), idToken);
+            // response.setHeader("Authorization",jwtaccesToken); envoyer le token dans le header
+            // Envoye dans le corps de la reponse sous format JSON=>ObjectMapper
+            response.setContentType("application/json");
+            new ObjectMapper().writeValue(response.getOutputStream(), idToken);
     }
 }

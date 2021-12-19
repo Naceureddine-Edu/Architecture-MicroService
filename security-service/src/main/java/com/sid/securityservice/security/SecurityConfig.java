@@ -68,14 +68,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Pour la base de donnée H2
+        // Pour avoir un nouveau acces token a partir de refreshToken
+        // Pour acceder a la page login MEME si c'est par default
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/h2-console/**").permitAll();
+        http.authorizeRequests().antMatchers("/h2-console/**",
+                                            "/refreshToken/**","/login/**").permitAll();
 
         // Tout utilisateur avec le ROLE USER peut acceder a la liste des USERS
-        http.authorizeRequests().antMatchers(HttpMethod.GET,"/users/**").hasAuthority("USER");
+        //http.authorizeRequests().antMatchers(HttpMethod.GET,"/users/**").hasAuthority("USER");
 
         // Y'a que l'utilisateur avec le ROLE ADMIN qui peut AJOUTER UN USER a la BD
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/**").hasAuthority("ADMIN");
+        //http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/**").hasAuthority("ADMIN");
 
         // Toutes les ressources nécessite d'etre AUTHENTIFIER
         // si on veut permettre des routes faut le faire avant cette ligne
